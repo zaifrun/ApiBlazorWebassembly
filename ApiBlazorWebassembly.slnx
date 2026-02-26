@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ApiBlazorWebassembly/ApiBlazorWebassembly.csproj" />
+  <Project Path="Persistance/Persistance.csproj" />
+  <Project Path="Shared/Shared.csproj" />
+  <Project Path="ShopAPI/ShopAPI.csproj" />
+</Solution>

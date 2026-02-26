@@ -1,0 +1,97 @@
+﻿@using ApiBlazorWebassembly.Services
+@using ApiBlazorWebassembly.Shared.Models
+@using System.Net
+@page "/shopping"
+<h3>Shopping List</h3>
+
+<h4>
+Mangler at købe: @Items.Count(item => !item.HaveBought)
+</h4>
+
+
+<!--
+    <p>
+        Name: @item.Name Quantity: @item.Quantity
+    </p>
+-->
+
+<ul>
+@foreach (var item in Items)
+{
+    
+    <li>
+        Id: @item.Id, @item.Name (antal: @item.Quantity).  Købt?
+        <input type="checkbox" 
+        @bind="item.HaveBought" @onclick="() => UpdateCheckBox(item)"/>
+           
+        <button @onclick="() => DeleteItem(item)">Delete</button>
+
+    </li>
+}
+</ul>
+
+
+
+<br>
+ID to delete: <input type="number" @bind="ItemIDSelected" />
+
+
+<button class="btn btn-primary" 
+  @onclick="DeleteItemHandler">Delete Item</button>
+
+<br />
+
+Latest ErrorCode : @ErrorCode
+
+
+@code {
+    private List<ShoppingItem> Items = new List<ShoppingItem>();
+    private int ItemIDSelected {get; set;} = 0;
+    public int ErrorCode { get; set; } = 0;
+
+    [Inject]
+    public IShoppingService Service { get; set; }
+
+    private async Task UpdateCheckBox(ShoppingItem item)
+    {
+        item.HaveBought = !item.HaveBought;
+        Console.WriteLine("client update item id = " + item.Id+", bought = "+item.HaveBought);
+        ErrorCode  = await Service.UpdateItem(item);
+    }
+
+    public async Task DeleteItem(ShoppingItem item)
+    {
+     
+            ErrorCode = (await Service.DeleteItem(item.Id));
+            Console.WriteLine($"Id seletected to delete {item.Id}, responsecode: {ErrorCode} ");
+            if (ErrorCode == (int)HttpStatusCode.OK)
+            {
+                Items = (await Service.GetAllItems()).ToList();
+
+            }
+    }
+
+
+
+
+    public async Task DeleteItemHandler()
+    {
+        if (ItemIDSelected!=0)
+        {
+            ErrorCode  = (await Service.DeleteItem(ItemIDSelected));
+            Console.WriteLine($"Id seletected to delete {ItemIDSelected}, responsecode: {ErrorCode} ");      
+            if (ErrorCode==(int) HttpStatusCode.OK)
+            {
+                Items = (await Service.GetAllItems()).ToList();
+
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+          Items = (await Service.GetAllItems()).ToList();
+
+    }
+
+}
