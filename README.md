@@ -1,9 +1,13 @@
 Der er 4 projekter:
 
-Et Shared: Bruges til DTOer
-Et BlazorWebAssembly project : her er blazor koden inklusiv services.
-Et Persistance project : Indeholder repositories som APIen bruger
-Et ShopAPI project : Indeholder REST Shopping APIen (er et ASP.NET Core WebApi Project).
+Et Shared: Bruges til DTOer  
+
+Et BlazorWebAssembly project : her er blazor koden inklusiv services.  
+
+Et Persistance project : Indeholder repositories som APIen bruger  
+
+Et ShopAPI project : Indeholder REST Shopping APIen (er et ASP.NET Core WebApi Project).  
+
 
 Bemærk at man skal køre BÅDE ShopAPI projektet og BlazorWebassembly projektet på samme tid (ellers kan webappen ikke bruge apien jo).
 Der ligger en run configuration som hedder "Api and client" som man kan vælge oppe i menuen ved siden af run knappen ("start up project). 
