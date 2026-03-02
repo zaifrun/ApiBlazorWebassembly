@@ -1,0 +1,92 @@
+﻿@page "/addproduct"
+@using ApiBlazorWebassembly.Services
+@using ApiBlazorWebassembly.Shared.Models
+
+
+<h3>Add Shopping Item</h3>
+
+
+<button class="btn btn-primary" 
+  @onclick="AddShoppingItemHandler">Add FIXED Item</button>
+
+<br />
+
+
+
+
+<EditForm Model="@ItemModel" 
+          OnValidSubmit="@HandleValidSubmit"
+          OnInvalidSubmit="@HandleInvalidSubmit"
+          class="row p-3">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+   
+    <div class="col-md-12 mb-3">
+      <label for="Name">Item Name</label>
+      <InputText id="Name" @bind-Value="ItemModel.Name" class="form-control" />
+
+   </div>
+   <div class="col-md-6 mb-3">
+      <label for="Price">Quantity</label>
+      <InputNumber id="quantity" @bind-Value="ItemModel.Quantity" class="form-control" />
+   </div>
+   
+   <div class="col-12 mb-3">
+      <button type="submit" class="btn btn-primary">Add Item</button>
+   </div>
+</EditForm>
+
+Error Code = @ErrorCode
+
+
+@code {
+
+    [Inject]
+    public IShoppingService Service { get; set; }
+    public int MaxID { get; set; } = 0;
+
+    private List<ShoppingItem> Items = new List<ShoppingItem>();
+    private ShoppingItem ItemModel = new ShoppingItem();
+
+    private int ErrorCode { get; set; } = 0;
+   
+
+    private async Task HandleValidSubmit()
+    {
+
+        //ItemModel.Id = MaxID+1;
+        ErrorCode = await Service.AddItem(ItemModel);
+        Console.WriteLine($"Shopping item added: id = {MaxID} return code: {ErrorCode}");
+        MaxID++;
+
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("Invalid form data - not validated");
+    }
+
+
+    //used only for the button add fixed item, not for the form
+    //just for quick testing, not for production code
+    private async Task AddShoppingItemHandler()
+    {
+        ShoppingItem item = new ShoppingItem(4, "Mælk", 5, false);
+        ErrorCode = await Service.AddItem(item);
+        Console.WriteLine("Shopping item added: return code: " + ErrorCode);
+
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Items = (await Service.GetAllItems()).ToList();
+        ShoppingItem maxItem = Items.MaxBy(m => m.Id);
+        if (maxItem != null)
+            MaxID = maxItem.Id;
+        Console.WriteLine(" nyt max id = " + MaxID);
+    }
+
+}
