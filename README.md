@@ -11,6 +11,7 @@ Et ShopAPI project : Indeholder REST Shopping APIen (er et ASP.NET Core WebApi P
 
 Bemærk at man skal køre BÅDE ShopAPI projektet og BlazorWebassembly projektet på samme tid (ellers kan webappen ikke bruge apien jo).
 Der ligger en run configuration som hedder "Api and client" som man kan vælge oppe i menuen ved siden af run knappen ("start up project). 
+I modsætning til Blazor server kommer de to projekter til at køre på hver sin port - dvs. helt seperat.
 
 Hvis man skal have det til at køre på sin egen computer skal man lige ind og tilrette port numre i forhold til localhost.
 Så man kan gøre projekterne og så få de port numre som APIen og Webassembly kører på.
