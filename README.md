@@ -37,48 +37,50 @@ Derefter skal man rette 2 steder og så køre det igen :
 
    På client siden i BlazorWebAssembly projectet, så kan opsætningen ses i program.cs :
 
-   
+   <code>
      builder.Services.AddScoped<ILoginService, LoginService>();
-
      builder.Services.AddScoped<CustomAuthStateProvider>();
      builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthStateProvider>());
-
-
      builder.Services.AddBlazoredSessionStorage();
-
      //de to politikker nedenunder bruges med AuthStateProvideren.
     builder.Services.AddAuthorizationCore(options =>
      {
          options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
          options.AddPolicy("User", policy => policy.RequireRole("Admin").RequireRole("User"));
-     
      });
+   </code>
 
      Der bliver brugt en nugetpakke (https://github.com/mmsoftpl/Blazor.Storage) til at gemme JWT i sessionstorage.
 
      Der er også lavet en CustomAuthStateProvider - se filen under Models i client projectet og se hvordan den bruges i på f.eks.
      Login.razor siden. Et eksempel på dette i Login.razor siden er f.eks. her:
-
+     <code>
       await sessionStorage.SetItemAsync("jwtToken", loginResponse.JWTToken);
       AuthStateProvider.update();
+   </code>
 
       Efter at have fået JWT token fra API efter login succes så gemmes det token og AuthStateProvider kaldes.
 
       Strengt taget behøver man ikke en AuthStateProvider, men hvis man implmentere en sådan en, som jeg har gjort her, så giver
       det nogle cool muligheder i Blazor (det følgende kræver lidt setup (man kan kopiere fra App.Razor) - her vist på profile.razor siden:
 
-      <AuthorizeView Roles="Admin">
-    <Authorized>
+    <pre> <code> 
+      &lt;AuthorizeView Roles="Admin">´
+    &lt;Authorized>
         I am authorized as admin
-    </Authorized>
-    <NotAuthorized>
-        <p>You are not authorized as admin.</p>
-    </NotAuthorized>
-    </AuthorizeView>
+    &lt;/Authorized>
+    &lt;NotAuthorized>
+        &lt;p>You are not authorized as admin.&lt;/p>
+    &lt;/NotAuthorized>
+    &lt;/AuthorizeView>
+    </code>
+    </pre>
 
-     Vi kan nu bruge <AuthorizeView> til at indikere at noget content på en side kun skal være tilgængelig hvis man er logget ind som f.eks. admin eller andet.
+     Vi kan nu bruge &lt;AuthorizeView> til at indikere at noget content på en side kun skal være tilgængelig hvis man er logget ind som f.eks. admin eller andet.
      Man behøver ikke yderligere check her, da AuthStateProvider bliver kaldt automatisk af Blazor for at tjekke hvilken rolle man har!!
-     Det er jo ret nice. 
+     Det er jo ret nice.
+
+     Der er lidt flere detaljer hist og pist, men man må selv gå på opdagelse i koden!
 
 
 
